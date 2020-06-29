@@ -5,9 +5,9 @@ from telegram_util import splitCommand, log_on_fail
 from telegram.ext import Updater, MessageHandler, Filters
 import export_to_telegraph
 import time
-import cached_url
 from db import DB
 import threading
+import yaml
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -40,7 +40,7 @@ def sendLink(site, link, fixed_channel = None):
 
 @log_on_fail(debug_group)
 def loopImp():
-	for site in db.sub.subscriptions()
+	for site in db.sub.subscriptions():
 		for link, _ in link_extractor.getLinks(site):
 			if not db.existing.add(link):
 				continue
@@ -100,15 +100,14 @@ Commands:
 /web_backfill - backfill
 
 Example: 
-/web_add https://squatting2047.com
-/web_add https://whogovernstw.org to_simplify
-/web_add https://www.thinkingtaiwan.com to_telegraph to_simplify
-/web_add https://www.thinkingtaiwan.com
-/web_add https://matters.news/@Margaux1848
-/web_add https://www.bbc.co.uk
-/web_add https://www.bbc.com/zhongwen/simp
 /web_add https://cn.nytimes.com
 /web_add https://www.nytimes.com
+/web_add https://squatting2047.com to_simplify
+/web_add https://whogovernstw.org to_simplify
+/web_add https://www.thinkingtaiwan.com to_simplify
+/web_add https://matters.news/@Margaux1848 to_simplify
+/web_add https://www.bbc.co.uk to_telegraph
+/web_add https://www.bbc.com/zhongwen/simp to_telegraph
 
 Can be used in group/channel also.
 
