@@ -83,7 +83,7 @@ def handleCommand(update, context):
 		site = config[0]
 		config = normalizeConfig(config[1:])
 		db.sub.add(msg.chat_id, site, config)
-		item_count = backfillSingle(site, chat_id, 1)
+		item_count = backfillSingle(site, msg.chat_id, 1)
 		if not item_count:
 			msg.reply_text('It seems I can not get link from this website')		
 			msg.forward(debug_group.id)
