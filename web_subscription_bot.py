@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from telegram_util import removeOldFiles, matchKey, cutCaption, clearUrl, splitCommand, log_on_fail, compactText
+from telegram_util import splitCommand, log_on_fail
 from telegram.ext import Updater, MessageHandler, Filters
 import export_to_telegraph
 import time
-import yaml
-from bs4 import BeautifulSoup
 import cached_url
 from db import DB
 import threading
@@ -21,90 +19,100 @@ debug_group = tele.bot.get_chat(420074357)
 db = DB()
 
 @log_on_fail(debug_group)
-def processNote(note, channels):
-	if not db.existing.add(note):
-		return
-	note = export_to_telegraph.export(note, force=True) or note
-	for channel in channels:
-		time.sleep(5)
-		channel.send_message(note)
+def sendLink(site, link, fixed_channel = None):
+	simplified = None
+	telegraph = None
+	for channel, config in db.sub.channels(site, tele.bot):
+		if fixed_channel and channel.id != fixed_channel:
+			continue 
+		if not simplified and 'to_simplify' in config:
+			simplified = export_to_telegraph.export(link, 
+				force_cache = True, force=True, toSimplified=True) or link
+		if not telegraph and 'to_telegraph' in config:
+			telegraph = export_to_telegraph.export(link, 
+				force_cache = True, force=True) or link
+		message = link
+		if 'to_simplify' in config:
+			message = simplified
+		if 'to_telegraph' in config:
+			message = telegraph
+		channel.send_message(message)
 
-@log_on_fail(debug_group)
-def processStatus(url, channels):
-	if not db.existing.add(note):
-		return
-	result = web_2_album.get(url)
-	for channel in channels:
-		time.sleep(5)
-		album_sender.send_v2(channel, result)
-
-def getStatus(user_id):
-	url = 'https://www.douban.com/people/%s' % user_id
-	soup = BeautifulSoup(cached_url.get(url, sleep=20), 'html.parser')
-	for item in soup.find_all('span', class_='created_at'):
-		sub_item = item.find('a')
-		if not sub_item:
-			continue
-		yield sub_item['href']
-
-def getNotes(user_id, page=1):
-	url = 'https://www.douban.com/people/%s/notes?start=%d' % (user_id, page * 10 - 10)
-	soup = BeautifulSoup(cached_url.get(url, sleep=20), 'html.parser')
-	for item in soup.find_all('div', class_="note-container"):
-		yield item['data-url']
-		
 @log_on_fail(debug_group)
 def loopImp():
-	removeOldFiles('tmp', day=0.1)
-	for user_id in db.sub.subscriptions():
-		channels = list(db.sub.channels(user_id, tele.bot))
-		for note in getNotes(user_id):
-			processNote(note, channels)
+	for site in db.sub.subscriptions()
+		for link, _ in link_extractor.getLinks(site):
+			if not db.existing.add(link):
+				continue
+			sendLink(site, link)
+			break # deal with one link per two hour
+
+def backfillSingle(site, chat_id, max_item = 10):
+	links = list(link_extractor.getLinks(site))[:max_item]
+	for link, _ in links:
+		sendLink(site, link, fixed_channel = chat_id)
+	return len(links)
 
 def backfill(chat_id):
-	channels = [tele.bot.get_chat(chat_id)]
-	for user_id in db.sub.sub.get(chat_id, []):
-		page = 0
-		while True:
-			page += 1
-			notes = list(getNotes(user_id, page))
-			if not notes:
-				return
-			for note in notes:
-				processNote(note, channels)
+	for site in db.sub.sub.get(chat_id, {}):
+		backfillSingle(site, chat_id)
 	tele.bot.get_chat(chat_id).send_message('finished backfill')
 
-def doubanLoop():
+def loop():
 	loopImp()
-	threading.Timer(60 * 60 * 2, doubanLoop).start()
+	threading.Timer(60 * 60 * 2, loop).start()
+
+def normalizeConfig(config):
+	accept_config = set('to_telegraph', 'to_simplify')
+	config = set(config) & accept_config
+	if 'to_simplify' in config:
+		return ['to_simplify']
+	else:
+		return list(config)
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
 	msg = update.effective_message
-	if not msg or not msg.text.startswith('/dbb'):
+	if not msg or not msg.text.startswith('/web'):
 		return
 	command, text = splitCommand(msg.text)
 	if 'remove' in command:
 		db.sub.remove(msg.chat_id, text)
 	elif 'add' in command:
-		db.sub.add(msg.chat_id, text)
+		config = text.split()
+		site = config[0]
+		config = normalizeConfig(config[1:])
+		db.sub.add(msg.chat_id, site, config)
+		item_count = backfillSingle(site, chat_id, 1)
+		if not item_count:
+			msg.reply_text('It seems I can not get link from this website')		
+			msg.forward(debug_group.id)
 	elif 'backfill' in command:
 		backfill(msg.chat_id)
 	msg.reply_text(db.sub.get(msg.chat_id), 
 		parse_mode='markdown', disable_web_page_preview=True)
 
 HELP_MESSAGE = '''
-**Support notes only**
-
 Commands:
-/dbb_add - add douban user
-/dbb_remove - remove douban user
-/dbb_view - view subscription
-/dbb_backfill - backfill
+/web_add - add website, support two additional config flags: to_telegraph, to_simplify
+/web_remove - remove website
+/web_view - view subscription
+/web_backfill - backfill
+
+Example: 
+/web_add https://squatting2047.com
+/web_add https://whogovernstw.org to_simplify
+/web_add https://www.thinkingtaiwan.com to_telegraph to_simplify
+/web_add https://www.thinkingtaiwan.com
+/web_add https://matters.news/@Margaux1848
+/web_add https://www.bbc.co.uk
+/web_add https://www.bbc.com/zhongwen/simp
+/web_add https://cn.nytimes.com
+/web_add https://www.nytimes.com
 
 Can be used in group/channel also.
 
-Github： https://github.com/gaoyunzhi/douban_bot
+Github： https://github.com/gaoyunzhi/web_subscription_bot
 '''
 
 def handleHelp(update, context):
@@ -115,7 +123,7 @@ def handleStart(update, context):
 		update.message.reply_text(HELP_MESSAGE)
 
 if __name__ == '__main__':
-	threading.Timer(1, doubanLoop).start() 
+	threading.Timer(1, loop).start() 
 	dp = tele.dispatcher
 	dp.add_handler(MessageHandler(Filters.command, handleCommand))
 	dp.add_handler(MessageHandler(Filters.private & (~Filters.command), handleHelp))
