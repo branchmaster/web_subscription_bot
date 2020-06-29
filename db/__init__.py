@@ -27,37 +27,42 @@ class Subscription(object):
 		with open('db/subscription') as f:
 			self.sub = yaml.load(f, Loader=yaml.FullLoader)
 
-	def add(self, chat_id, text):
+	def add(self, chat_id, text, config = []):
 		if not text:
 			return
-		self.sub[chat_id] = self.sub.get(chat_id, []) + [text]
+		self.sub[chat_id] = self.sub.get(chat_id, {})
+		self.sub[chat_id][text] = config
 		self.save()
 
 	def remove(self, chat_id, text):
 		if not text:
 			return
-		self.sub[chat_id] = self.sub.get(chat_id, [])
+		self.sub[chat_id] = self.sub.get(chat_id, {})
 		try:
 			self.sub[chat_id].remove(text)
 		except:
 			...
 		self.save()
 
+	def subscriptionItems(self, chat_id):
+		for item in self.sub.get(chat_id, {}):
+			yield item + ' ' + ' '.join(config)
+
 	def get(self, chat_id):
-		return 'subscriptions:\n' + '\n'.join(self.sub.get(chat_id, []))
+		return 'subscriptions:\n' + '\n'.join(list(subscriptionItems(chat_id)))
 
 	def subscriptions(self):
 		result = set()
 		for chat_id in self.sub:
-			for item in self.sub.get(chat_id, []):
+			for item in self.sub.get(chat_id, {}):
 				result.add(item)
 		return result
 
 	def channels(self, item, bot):
 		for chat_id in self.sub:
-			if item in self.sub.get(chat_id, []):
+			if item in self.sub.get(chat_id, {}):
 				try:
-					yield bot.get_chat(chat_id)
+					yield bot.get_chat(chat_id), self.sub[chat_id][item]
 				except:
 					...
 

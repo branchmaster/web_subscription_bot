@@ -10,14 +10,12 @@ from bs4 import BeautifulSoup
 import cached_url
 from db import DB
 import threading
-import web_2_album
-import album_sender
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
 export_to_telegraph.token = credential['telegraph_token']
 
-tele = Updater(credential['bot_token'], use_context=True)
+tele = Updater(credential['bot_token'], use_context=True) # @web_subscription_bot
 debug_group = tele.bot.get_chat(420074357)
 
 db = DB()
