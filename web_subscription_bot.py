@@ -8,6 +8,7 @@ import time
 from db import DB
 import threading
 import yaml
+import link_extractor
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
