@@ -88,6 +88,8 @@ def handleCommand(update, context):
 		if not item_count:
 			msg.reply_text('It seems I can not get link from this website')		
 			msg.forward(debug_group.id)
+		else:
+			msg.reply_text('Above is an example article you will get in the furture. If this does not look right, feel free to report bug on Github.')
 	elif 'backfill' in command:
 		backfill(msg.chat_id)
 	msg.reply_text(db.sub.get(msg.chat_id), disable_web_page_preview=True)
