@@ -90,8 +90,7 @@ def handleCommand(update, context):
 			msg.forward(debug_group.id)
 	elif 'backfill' in command:
 		backfill(msg.chat_id)
-	msg.reply_text(db.sub.get(msg.chat_id), 
-		parse_mode='markdown', disable_web_page_preview=True)
+	msg.reply_text(db.sub.get(msg.chat_id), disable_web_page_preview=True)
 
 HELP_MESSAGE = '''
 Commands:
