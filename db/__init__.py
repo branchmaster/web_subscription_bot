@@ -46,7 +46,7 @@ class Subscription(object):
 
 	def subscriptionItems(self, chat_id):
 		for item in self.sub.get(chat_id, {}):
-			yield item + ' ' + ' '.join(config)
+			yield item + ' ' + ' '.join(self.sub[chat_id][item])
 
 	def get(self, chat_id):
 		return 'subscriptions:\n' + '\n'.join(
