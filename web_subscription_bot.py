@@ -63,7 +63,7 @@ def loop():
 	threading.Timer(60 * 60 * 2, loop).start()
 
 def normalizeConfig(config):
-	accept_config = set('to_telegraph', 'to_simplify')
+	accept_config = set(['to_telegraph', 'to_simplify'])
 	config = set(config) & accept_config
 	if 'to_simplify' in config:
 		return ['to_simplify']
