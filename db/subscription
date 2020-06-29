@@ -1,2 +1,3 @@
 -472784450:
-  https://cn.nytimes.com: []
+  https://cn.nytimes.com:
+  - to_telegraph
