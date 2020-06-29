@@ -22,25 +22,18 @@ class DBItem(object):
 			f.write('\n' + x)
 		return True
 
-def normalizeUser(text):
-	if not text:
-		return
-	return text.strip('/').split('/')[-1]
-
 class Subscription(object):
 	def __init__(self):
 		with open('db/subscription') as f:
 			self.sub = yaml.load(f, Loader=yaml.FullLoader)
 
 	def add(self, chat_id, text):
-		text = normalizeUser(text)
 		if not text:
 			return
 		self.sub[chat_id] = self.sub.get(chat_id, []) + [text]
 		self.save()
 
 	def remove(self, chat_id, text):
-		text = normalizeUser(text)
 		if not text:
 			return
 		self.sub[chat_id] = self.sub.get(chat_id, [])
@@ -51,9 +44,7 @@ class Subscription(object):
 		self.save()
 
 	def get(self, chat_id):
-		return 'subscriptions: ' + ' '.join([
-			'[%s](%s)' % (user_id, 'https://www.douban.com/people/' + user_id)
-			for user_id in self.sub.get(chat_id, [])])
+		return 'subscriptions:\n' + '\n'.join(self.sub.get(chat_id, []))
 
 	def subscriptions(self):
 		result = set()
@@ -62,9 +53,9 @@ class Subscription(object):
 				result.add(item)
 		return result
 
-	def channels(self, user_id, bot):
+	def channels(self, item, bot):
 		for chat_id in self.sub:
-			if user_id in self.sub.get(chat_id, []):
+			if item in self.sub.get(chat_id, []):
 				try:
 					yield bot.get_chat(chat_id)
 				except:
