@@ -39,7 +39,7 @@ class Subscription(object):
 			return
 		self.sub[chat_id] = self.sub.get(chat_id, {})
 		try:
-			self.sub[chat_id].remove(text)
+			del self.sub[chat_id][text]
 		except:
 			...
 		self.save()
