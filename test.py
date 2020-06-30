@@ -3,6 +3,7 @@ from telegram.ext import Updater
 import export_to_telegraph
 import yaml
 import os
+import time
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -22,10 +23,12 @@ def test():
 			if link in existing:
 				continue
 			existing.add(link)
+			count += 1
+			if count < 10:
+				continue
 			simplified = export_to_telegraph.export(link, 
 				force_cache = True, force=True, toSimplified=True) 
 			debug_group.send_message(simplified)
-			count += 1
 			if count > 20:
 				os.system('open %s -g' % simplified)
 
