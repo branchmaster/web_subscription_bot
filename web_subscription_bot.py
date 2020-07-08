@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from telegram_util import splitCommand, log_on_fail
+from telegram_util import splitCommand, log_on_fail, matchKey
 from telegram.ext import Updater, MessageHandler, Filters
 import export_to_telegraph
 import time
