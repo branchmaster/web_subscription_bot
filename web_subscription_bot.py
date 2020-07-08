@@ -53,7 +53,7 @@ def loopImp():
 			break # deal with one link per two hour
 
 def backfillSingle(site, chat_id, max_item = 10):
-	print(site, link_extractor.getLinks(site)link_extractor.getLinks(site))
+	print(site, link_extractor.getLinks(site))
 	links = list(link_extractor.getLinks(site))[:max_item]
 	for link, _ in links:
 		sendLink(site, link, fixed_channel = chat_id)
