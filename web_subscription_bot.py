@@ -39,7 +39,7 @@ def sendLink(site, link, fixed_channel = None):
 			message = telegraph
 		try:
 			channel.send_message(message)
-		except Exception(e):
+		except Exception as e:
 			if not matchKey(str(e), ['bot was blocked by the user']):
 				debug_group.send_message('send fail: ' + str(e))
 
