@@ -37,7 +37,11 @@ def sendLink(site, link, fixed_channel = None):
 			message = simplified
 		if 'to_telegraph' in config:
 			message = telegraph
-		channel.send_message(message)
+		try:
+			channel.send_message(message)
+		except Exception(e):
+			if not matchKey(str(e), ['bot was blocked by the user']):
+				debug_group.send_message('send fail: ' + str(e))
 
 @log_on_fail(debug_group)
 def loopImp():
