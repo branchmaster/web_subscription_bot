@@ -58,7 +58,7 @@ def sendLink(site, link, fixed_channel = None):
 			message = telegraph
 		try:
 			if album_result:
-				album_sender.send_v2(album_result)
+				album_sender.send_v2(channel, album_result)
 			else:
 				channel.send_message(message)
 		except Exception as e:
