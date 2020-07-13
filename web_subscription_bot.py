@@ -112,13 +112,13 @@ def handleCommand(update, context):
 		db.sub.add(msg.chat_id, site, config)
 		item_count = backfillSingle(site, msg.chat_id, 1)
 		if not item_count:
-			msg.reply_text('It seems I can not get link from this website')		
+			msg.chat.send_message('It seems I can not get link from this website')		
 			msg.forward(debug_group.id)
 		else:
-			msg.reply_text('Above is an example article you will get in the furture. If this does not look right, feel free to report bug on Github.')
+			msg.chat.send_message('Above is an example article you will get in the furture. If this does not look right, feel free to report bug on Github.')
 	elif 'backfill' in command:
 		backfill(msg.chat_id)
-	msg.reply_text(db.sub.get(msg.chat_id), disable_web_page_preview=True)
+	msg.chat.send_message(db.sub.get(msg.chat_id), disable_web_page_preview=True)
 
 HELP_MESSAGE = '''
 Commands:
