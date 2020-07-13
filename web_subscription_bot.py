@@ -71,6 +71,8 @@ def sendLink(site, link, fixed_channel = None):
 @log_on_fail(debug_group)
 def loopImp():
 	for site in db.sub.subscriptions():
+		if 'douban' in site:
+			print(site, list(link_extractor.getLinks(site)))
 		for link, _ in link_extractor.getLinks(site):
 			if not shouldSendDouban(link) or not db.existing.add(link):
 				continue
