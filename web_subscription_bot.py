@@ -23,21 +23,6 @@ debug_group = tele.bot.get_chat(420074357)
 
 db = DB()
 
-def dataCount(item):
-	for x in item.find_all('span', class_='count'):
-		r = int(x.get('data-count'))
-		if r:
-			yield r
-
-def shouldSendDouban(link):
-	if '/note/' in link:
-		return False # testing
-	if not '.douban.' in link or '/note/' in link:
-		return True
-	soup = BeautifulSoup(cached_url.get(link), 'html.parser')
-	return True # testing
-	return sum(dataCount(soup)) > 120
-
 @log_on_fail(debug_group)
 def sendLink(site, link, fixed_channel = None):
 	simplified = None
@@ -71,10 +56,8 @@ def sendLink(site, link, fixed_channel = None):
 @log_on_fail(debug_group)
 def loopImp():
 	for site in db.sub.subscriptions():
-		if 'douban' in site:
-			print(site, list(link_extractor.getLinks(site)))
 		for link, _ in link_extractor.getLinks(site):
-			if not shouldSendDouban(link) or not db.existing.add(link):
+			if not db.existing.add(link):
 				continue
 			sendLink(site, link)
 			break # deal with one link per two hour
