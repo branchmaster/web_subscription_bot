@@ -30,6 +30,8 @@ def dataCount(item):
 			yield r
 
 def shouldSendDouban(link):
+	if '/note/' in link:
+		return False # testing
 	if not '.douban.' in link or '/note/' in link:
 		return True
 	soup = BeautifulSoup(cached_url.get(link), 'html.parser')
