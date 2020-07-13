@@ -11,6 +11,8 @@ import yaml
 import link_extractor
 import web_2_album
 import album_sender
+import cached_url
+from bs4 import BeautifulSoup
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -20,6 +22,18 @@ tele = Updater(credential['bot_token'], use_context=True) # @web_subscription_bo
 debug_group = tele.bot.get_chat(420074357)
 
 db = DB()
+
+def dataCount(item):
+	for x in item.find_all('span', class_='count'):
+		r = int(x.get('data-count'))
+		if r:
+			yield r
+
+def shouldSendDouban(link):
+	if not '.douban.' in link or '/note/' in link:
+		return True
+	soup = BeautifulSoup(cached_url.get(link), 'html.parser')
+	return sum(dataCount(soup)) > 120
 
 @log_on_fail(debug_group)
 def sendLink(site, link, fixed_channel = None):
@@ -33,7 +47,7 @@ def sendLink(site, link, fixed_channel = None):
 			simplified = export_to_telegraph.export(link, 
 				force_cache = True, force=True, toSimplified=True) or link
 		if '.douban.' in link and '/note/' not in link:
-			album_result = web_2_album.get(link)
+			album_result = web_2_album.get(link, force_cache = True)
 		if not telegraph and not album_result and 'to_telegraph' in config:
 			telegraph = export_to_telegraph.export(link, 
 				force_cache = True, force=True) or link
@@ -55,7 +69,7 @@ def sendLink(site, link, fixed_channel = None):
 def loopImp():
 	for site in db.sub.subscriptions():
 		for link, _ in link_extractor.getLinks(site):
-			if not db.existing.add(link):
+			if not shouldSendDouban(link) or not db.existing.add(link):
 				continue
 			sendLink(site, link)
 			break # deal with one link per two hour
