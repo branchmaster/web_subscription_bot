@@ -13,6 +13,7 @@ import web_2_album
 import album_sender
 import cached_url
 from bs4 import BeautifulSoup
+import time
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -46,6 +47,7 @@ def sendLink(site, link, fixed_channel = None):
 			message = telegraph
 		try:
 			if album_result:
+				time.sleep(30)
 				album_sender.send_v2(channel, album_result)
 			else:
 				channel.send_message(message)
