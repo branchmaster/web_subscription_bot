@@ -7,7 +7,8 @@
 -1001250188871:
   https://matters.news:
   - to_simplify
-  https://www.thinkingtaiwan.com: []
+  https://www.thinkingtaiwan.com:
+  - to_simplify
 -1001100334908:
   http://www.gzhshoulu.wang/account_PourMarx.html:
   - to_telegraph
