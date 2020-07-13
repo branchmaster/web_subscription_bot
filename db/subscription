@@ -2,6 +2,8 @@
 -1001286993474:
   https://www.douban.com/:
   - to_telegraph
+  https://www.douban.com/explore/:
+  - to_telegraph
 -1001100334908:
   http://www.gzhshoulu.wang/account_PourMarx.html:
   - to_telegraph
