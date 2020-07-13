@@ -35,6 +35,7 @@ def shouldSendDouban(link):
 	if not '.douban.' in link or '/note/' in link:
 		return True
 	soup = BeautifulSoup(cached_url.get(link), 'html.parser')
+	return True # testing
 	return sum(dataCount(soup)) > 120
 
 @log_on_fail(debug_group)
