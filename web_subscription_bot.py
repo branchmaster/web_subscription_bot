@@ -9,6 +9,8 @@ from db import DB
 import threading
 import yaml
 import link_extractor
+import web_2_album
+import album_sender
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -23,13 +25,16 @@ db = DB()
 def sendLink(site, link, fixed_channel = None):
 	simplified = None
 	telegraph = None
+	album_result = None
 	for channel, config in db.sub.channels(site, tele.bot):
 		if fixed_channel and channel.id != fixed_channel:
 			continue 
 		if not simplified and 'to_simplify' in config:
 			simplified = export_to_telegraph.export(link, 
 				force_cache = True, force=True, toSimplified=True) or link
-		if not telegraph and 'to_telegraph' in config:
+		if '.douban.' in link and '/note/' not in link:
+			album_result = web_2_album.get(link)
+		if not telegraph and not album_result and 'to_telegraph' in config:
 			telegraph = export_to_telegraph.export(link, 
 				force_cache = True, force=True) or link
 		message = link
@@ -38,7 +43,10 @@ def sendLink(site, link, fixed_channel = None):
 		if 'to_telegraph' in config:
 			message = telegraph
 		try:
-			channel.send_message(message)
+			if album_result:
+				album_sender.send_v2(album_result)
+			else:
+				channel.send_message(message)
 		except Exception as e:
 			if not matchKey(str(e), ['bot was blocked by the user']):
 				debug_group.send_message('send fail: ' + str(e))
@@ -53,7 +61,6 @@ def loopImp():
 			break # deal with one link per two hour
 
 def backfillSingle(site, chat_id, max_item = 10):
-	print(site, link_extractor.getLinks(site))
 	links = list(link_extractor.getLinks(site))[:max_item]
 	for link, _ in links:
 		sendLink(site, link, fixed_channel = chat_id)
