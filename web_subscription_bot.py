@@ -89,7 +89,7 @@ def normalizeConfig(config):
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
-	print(5)
+	print('handleCommand')
 	msg = update.effective_message
 	if not msg or not msg.text.startswith('/web'):
 		return
@@ -142,13 +142,9 @@ def handleStart(update, context):
 
 if __name__ == '__main__':
 	threading.Timer(1, loop).start() 
-	print(1)
 	dp = tele.dispatcher
 	dp.add_handler(MessageHandler(Filters.command, handleCommand))
 	dp.add_handler(MessageHandler(Filters.private & (~Filters.command), handleHelp))
 	dp.add_handler(MessageHandler(Filters.private & Filters.command, handleStart), group=2)
-	print(2)
 	tele.start_polling()
-	print(3)
 	tele.idle()
-	print(4)
