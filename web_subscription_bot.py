@@ -77,7 +77,7 @@ def backfill(chat_id):
 
 def loop():
 	loopImp()
-	threading.Timer(60 * 60 * 2, loop).start()
+	threading.Timer(60 * 60 * 4, loop).start()
 
 def normalizeConfig(config):
 	accept_config = set(['to_telegraph', 'to_simplify'])
