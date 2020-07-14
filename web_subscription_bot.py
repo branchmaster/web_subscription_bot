@@ -47,9 +47,10 @@ def sendLink(site, link, fixed_channel = None):
 			message = telegraph
 		try:
 			if album_result:
-				time.sleep(30)
+				time.sleep(60)
 				album_sender.send_v2(channel, album_result)
 			else:
+				time.sleep(10)
 				channel.send_message(message)
 		except Exception as e:
 			if not matchKey(str(e), ['bot was blocked by the user']):
