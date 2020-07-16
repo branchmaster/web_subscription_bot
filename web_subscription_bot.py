@@ -59,7 +59,9 @@ def sendLink(site, link, fixed_channel = None):
 @log_on_fail(debug_group)
 def loopImp():
 	for site in db.sub.subscriptions():
-		for link, _ in link_extractor.getLinks(site):
+		for link, count in link_extractor.getLinks(site):
+			if 'douban.com/explore' in site and count < 120:
+				continue
 			if not db.existing.add(link):
 				continue
 			sendLink(site, link)
