@@ -18,6 +18,8 @@
 -1001100334908:
   http://www.gzhshoulu.wang/account_PourMarx.html:
   - to_telegraph
+  https://chinaworker.info/cn/:
+  - to_telegraph
   https://matters.news/@zoezhao:
   - to_simplify
   https://vocus.cc/5a12023feceaed97b40204c9/home:
