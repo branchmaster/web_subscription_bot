@@ -42,6 +42,8 @@
   - to_telegraph
 754721795: {}
 805201720:
+  http://m.neweekly.com.cn:
+  - to_telegraph
   https://www.equestriadaily.com:
   - to_telegraph
 859245286:
