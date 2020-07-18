@@ -43,9 +43,7 @@
   http://tagesschau.de:
   - to_telegraph
 754721795: {}
-805201720:
-  https://www.equestriadaily.com:
-  - to_telegraph
+805201720: {}
 859245286:
   https://www.bbc.co.uk:
   - to_telegraph
