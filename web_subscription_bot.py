@@ -65,7 +65,7 @@ def loopImp():
 			if not db.existing.add(link):
 				continue
 			title = ''.join(export_to_telegraph.getTitle(link).split())
-			print(title) # testing
+			print('title', title) # testing
 			if not db.existing.add(title):
 				continue
 			sendLink(site, link)
