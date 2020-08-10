@@ -64,6 +64,10 @@ def loopImp():
 				continue
 			if not db.existing.add(link):
 				continue
+			title = ''.join(export_to_telegraph.getTitle(link).split())
+			print(title) # testing
+			if not db.existing.add(title):
+				continue
 			sendLink(site, link)
 			break # deal with one link per two hour
 
