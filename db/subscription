@@ -54,6 +54,8 @@
   - to_telegraph
   http://zhishifenzi.com/u/59.html:
   - to_telegraph
+  https://cn.nytimes.com/opinion/:
+  - to_telegraph
   https://matters.news/@Margaux1848:
   - to_telegraph
   https://matters.news/@ngocncat:
