@@ -61,6 +61,7 @@ def loopImp():
 		for link in link_extractor.getLinks(site):
 			if not db.existing.add(link):
 				continue
+			print(site, link)
 			title = ''.join(export_to_telegraph.getTitle(link).split())
 			if not db.existing.add(title):
 				continue
