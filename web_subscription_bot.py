@@ -39,13 +39,16 @@ def sendLink(site, link, fixed_channel = None):
 		if '.douban.' in link and '/note/' not in link:
 			album_result = web_2_album.get(link, force_cache = True)
 		if not telegraph and not album_result and 'to_telegraph' in config:
+			print('telegraph in config')
 			telegraph = export_to_telegraph.export(link, 
 				force_cache = True, force=True) or link
+			print('telegraph = ', telegraph)
 		message = link
 		if 'to_simplify' in config:
 			message = simplified
 		if 'to_telegraph' in config:
 			message = telegraph
+		print('message =', message)
 		try:
 			if album_result:
 				time.sleep(60)
@@ -66,7 +69,6 @@ def loopImp():
 			if not db.existing.add(link):
 				continue
 			title = ''.join(export_to_telegraph.getTitle(link).split())
-			print('title', title) # testing
 			if not db.existing.add(title):
 				continue
 			sendLink(site, link)
