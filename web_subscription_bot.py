@@ -26,7 +26,6 @@ db = DB()
 
 @log_on_fail(debug_group)
 def sendLink(site, link, fixed_channel = None):
-	print('sendLink', site, link)
 	simplified = None
 	telegraph = None
 	album_result = None
@@ -39,17 +38,13 @@ def sendLink(site, link, fixed_channel = None):
 		if '.douban.' in link and '/note/' not in link:
 			album_result = web_2_album.get(link, force_cache = True)
 		if not telegraph and not album_result and 'to_telegraph' in config:
-			print('telegraph in config, link=', link)
-			link = link.strip()
 			telegraph = export_to_telegraph.export(link, 
 				force_cache = True, force=True) or link
-			print('telegraph = ', telegraph)
 		message = link
 		if 'to_simplify' in config:
 			message = simplified
 		if 'to_telegraph' in config:
 			message = telegraph
-		print('message =', message)
 		try:
 			time.sleep(60)
 			if album_result:
@@ -99,7 +94,6 @@ def normalizeConfig(config):
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
-	print('handleCommand')
 	msg = update.effective_message
 	if not msg or not msg.text.startswith('/web'):
 		return
