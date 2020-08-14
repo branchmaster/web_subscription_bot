@@ -26,6 +26,7 @@ db = DB()
 
 @log_on_fail(debug_group)
 def sendLink(site, link, fixed_channel = None):
+	print('sendLink', site, link)
 	simplified = None
 	telegraph = None
 	album_result = None
