@@ -40,6 +40,7 @@ def sendLink(site, link, fixed_channel = None):
 			album_result = web_2_album.get(link, force_cache = True)
 		if not telegraph and not album_result and 'to_telegraph' in config:
 			print('telegraph in config, link=', link)
+			link = link.strip()
 			telegraph = export_to_telegraph.export(link, 
 				force_cache = True, force=True) or link
 			print('telegraph = ', telegraph)
