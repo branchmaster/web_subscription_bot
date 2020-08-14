@@ -58,9 +58,7 @@ def sendLink(site, link, fixed_channel = None):
 @log_on_fail(debug_group)
 def loopImp():
 	for site in db.sub.subscriptions():
-		for link, count in link_extractor.getLinks(site):
-			if 'douban.com/explore' in site and count < 120:
-				continue
+		for link in link_extractor.getLinks(site):
 			if not db.existing.add(link):
 				continue
 			title = ''.join(export_to_telegraph.getTitle(link).split())
@@ -71,7 +69,7 @@ def loopImp():
 
 def backfillSingle(site, chat_id, max_item = 10):
 	links = list(link_extractor.getLinks(site))[:max_item]
-	for link, _ in links:
+	for link in links:
 		sendLink(site, link, fixed_channel = chat_id)
 	return len(links)
 

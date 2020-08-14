@@ -19,7 +19,7 @@ def test():
 	prefix = 'https://squatting2047.com/page/'
 	for page in range(2, 7):
 		url = prefix + str(page)
-		for link, _ in link_extractor.getLinks(url):
+		for link in link_extractor.getLinks(url):
 			if link in existing:
 				continue
 			existing.add(link)
