@@ -39,7 +39,7 @@ def sendLink(site, link, fixed_channel = None):
 		if '.douban.' in link and '/note/' not in link:
 			album_result = web_2_album.get(link, force_cache = True)
 		if not telegraph and not album_result and 'to_telegraph' in config:
-			print('telegraph in config')
+			print('telegraph in config, link=', link)
 			telegraph = export_to_telegraph.export(link, 
 				force_cache = True, force=True) or link
 			print('telegraph = ', telegraph)
@@ -50,15 +50,14 @@ def sendLink(site, link, fixed_channel = None):
 			message = telegraph
 		print('message =', message)
 		try:
+			time.sleep(60)
 			if album_result:
-				time.sleep(60)
 				album_sender.send_v2(channel, album_result)
 			else:
-				time.sleep(10)
 				channel.send_message(message)
 		except Exception as e:
-			if not matchKey(str(e), ['bot was blocked by the user']):
-				debug_group.send_message('send fail: ' + str(e))
+			debug_group.send_message('send fail: ' + str(channel.id) 
+				+ ' ' + str(e))
 
 @log_on_fail(debug_group)
 def loopImp():
