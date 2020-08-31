@@ -55,6 +55,8 @@
 -1001150319765:
   https://matters.news/@byron808:
   - to_telegraph
+  https://www.zhihu.com/people/icnpolitics/posts:
+  - to_telegraph
 -1001100334908:
   http://cnpolitics.org/author/zhangyueran/:
   - to_telegraph
