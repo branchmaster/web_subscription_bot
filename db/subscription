@@ -53,6 +53,8 @@
   https://ed.ted.com/search?qs=politics#all: []
   https://ed.ted.com/search?qs=society: []
 -1001150319765:
+  https://borderless-hk.com/:
+  - to_simplify
   https://matters.news/@byron808:
   - to_telegraph
   https://philomedium.com/:
