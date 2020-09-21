@@ -55,6 +55,8 @@
 -1001150319765:
   https://borderless-hk.com/:
   - to_simplify
+  https://matters.news/@DriftIsland:
+  - to_telegraph
   https://matters.news/@byron808:
   - to_telegraph
   https://philomedium.com/:
