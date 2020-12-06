@@ -65,8 +65,6 @@
   https://ed.ted.com/search?qs=politics#all: []
   https://ed.ted.com/search?qs=society: []
 -1001150319765:
-  http://www.shiwuzq.org/portal.php:
-  - to_telegraph
   https://borderless-hk.com/:
   - to_simplify
   https://matters.news/@DriftIsland:
