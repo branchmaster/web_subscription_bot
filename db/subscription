@@ -64,6 +64,9 @@
 -1001187025732:
   https://ed.ted.com/search?qs=politics#all: []
   https://ed.ted.com/search?qs=society: []
+-1001161895837:
+  https://wemp.app/accounts/3a278eaa-6969-4db4-b45c-3059ab8868e1:
+  - to_telegraph
 -1001150319765:
   https://borderless-hk.com/:
   - to_simplify
