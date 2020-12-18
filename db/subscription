@@ -33,6 +33,8 @@
 -1001399998441: {}
 -1001370746032: {}
 -1001331886734:
+  https://www.greenpeace.org.cn/:
+  - to_telegraph
   https://www.greenpeace.org/taiwan/:
   - to_simplify
 -1001286993474:
