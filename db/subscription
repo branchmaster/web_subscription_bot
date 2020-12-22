@@ -157,6 +157,8 @@
 1140730983:
   https://cn.nytimes.com: []
 1142910292:
+  http://zhanlve.org/:
+  - to_telegraph
   https://matters.news/@Peakman_Cheung:
   - to_telegraph
   https://matters.news/@andyischaos:
