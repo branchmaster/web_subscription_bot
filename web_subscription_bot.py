@@ -57,7 +57,7 @@ def sendLink(site, link, fixed_channel = None):
 
 @log_on_fail(debug_group)
 def loopImp():
-	for site in ['https://www.thenewslens.com/author/newbloom']: # db.sub.subscriptions():
+	for site in db.sub.subscriptions():
 		for link in link_extractor.getLinks(site):
 			if not db.existing.add(link):
 				continue
@@ -65,8 +65,7 @@ def loopImp():
 			if not db.existing.add(title):
 				continue
 			sendLink(site, link)
-			time.sleep(30)
-			# break # deal with one link per two hour
+			break # deal with one link per two hour
 
 def backfillSingle(site, chat_id, max_item = 10):
 	links = list(link_extractor.getLinks(site))[:max_item]
