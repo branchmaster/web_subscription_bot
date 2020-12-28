@@ -57,7 +57,7 @@ def sendLink(site, link, fixed_channel = None):
 
 @log_on_fail(debug_group)
 def loopImp():
-	for site in ['https://www.thenewslens.com/author/newbloom']: db.sub.subscriptions():
+	for site in ['https://www.thenewslens.com/author/newbloom']: # db.sub.subscriptions():
 		for link in link_extractor.getLinks(site):
 			if not db.existing.add(link):
 				continue
