@@ -54,7 +54,7 @@ def sendLink(site, link, fixed_channel = None):
 			debug_group.send_message('send fail: ' + str(channel.id) 
 				+ ' ' + str(e))
 		finally:
-			time.sleep(60)
+			time.sleep(120)
 
 @log_on_fail(debug_group)
 def loopImp():
@@ -71,7 +71,6 @@ def loopImp():
 			if not db.existing.add(title):
 				continue
 			sendLink(site, link)
-			return
 
 def backfillSingle(site, chat_id, max_item = 10):
 	links = list(link_extractor.getLinks(site))[:max_item]
@@ -86,7 +85,7 @@ def backfill(chat_id):
 
 def loop():
 	loopImp()
-	threading.Timer(60 * 2, loop).start()
+	threading.Timer(60 * 60 * 2, loop).start()
 
 def normalizeConfig(config):
 	accept_config = set(['to_telegraph', 'to_simplify'])
