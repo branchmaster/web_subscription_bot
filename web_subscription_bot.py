@@ -46,7 +46,6 @@ def sendLink(site, link, fixed_channel = None):
 		if 'to_telegraph' in config:
 			message = telegraph
 		try:
-			time.sleep(60)
 			if album_result:
 				album_sender.send_v2(channel, album_result)
 			else:
@@ -54,6 +53,8 @@ def sendLink(site, link, fixed_channel = None):
 		except Exception as e:
 			debug_group.send_message('send fail: ' + str(channel.id) 
 				+ ' ' + str(e))
+		finally:
+			time.sleep(60)
 
 @log_on_fail(debug_group)
 def loopImp():
@@ -85,7 +86,7 @@ def backfill(chat_id):
 
 def loop():
 	loopImp()
-	threading.Timer(60 * 60 * 2, loop).start()
+	threading.Timer(60 * 2, loop).start()
 
 def normalizeConfig(config):
 	accept_config = set(['to_telegraph', 'to_simplify'])
