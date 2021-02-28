@@ -210,6 +210,7 @@
 1662884068:
   https://www.bbc.co.uk:
   - to_telegraph
-  https://www.nytimes.com: []
+  https://www.nytimes.com:
+  - to_simplify
   https://www.thinkingtaiwan.com:
   - to_simplify
