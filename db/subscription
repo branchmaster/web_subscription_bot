@@ -209,3 +209,5 @@
 1440103122: {}
 1662884068:
   https://www.nytimes.com: []
+  https://www.thinkingtaiwan.com:
+  - to_simplify
