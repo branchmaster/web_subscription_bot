@@ -208,6 +208,8 @@
   - to_telegraph
 1440103122: {}
 1662884068:
+  https://www.bbc.co.uk:
+  - to_telegraph
   https://www.nytimes.com: []
   https://www.thinkingtaiwan.com:
   - to_simplify
