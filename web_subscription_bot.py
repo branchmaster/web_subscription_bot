@@ -31,6 +31,7 @@ def sendLink(site, link, fixed_channel = None):
 	simplified = None
 	telegraph = None
 	album_result = None
+	sent = False
 	for channel, config in db.sub.channels(site, tele.bot):
 		if fixed_channel and channel.id != fixed_channel:
 			continue 
@@ -47,16 +48,20 @@ def sendLink(site, link, fixed_channel = None):
 			message = simplified
 		if 'to_telegraph' in config:
 			message = telegraph
+		result = [1] * 10
 		try:
 			if album_result:
-				album_sender.send_v2(channel, album_result)
+				result = album_sender.send_v2(channel, album_result)
 			else:
-				channel.send_message(message)
+				result = channel.send_message(message)
 		except Exception as e:
 			debug_group.send_message('send fail: ' + str(channel.id) 
 				+ ' ' + str(e))
 		finally:
-			time.sleep(120)
+			if sent:
+				post_len = len(result)
+				time.sleep((post_len ** 2) / 2 + post_len * 10)
+			sent = True
 
 @log_on_fail(debug_group)
 def loopImp():
@@ -65,18 +70,18 @@ def loopImp():
 			scheduled.append(item)
 		random.shuffle(scheduled)
 	site = scheduled.pop()
-		try:
-			links = link_extractor.getLinks(site)
-		except Exception as e:
-			print('web_bot, getLinks fail', str(e), site)
+	try:
+		links = link_extractor.getLinks(site)
+	except Exception as e:
+		print('web_bot, getLinks fail', str(e), site)
+		return
+	for link in links:
+		if not db.existing.add(link):
 			continue
-		for link in links:
-			if not db.existing.add(link):
-				continue
-			title = ''.join(export_to_telegraph.getTitle(link).split())
-			if not db.existing.add(title):
-				continue
-			sendLink(site, link)
+		title = ''.join(export_to_telegraph.getTitle(link).split())
+		if not db.existing.add(title):
+			continue
+		sendLink(site, link)
 
 def backfillSingle(site, chat_id, max_item = 10):
 	links = list(link_extractor.getLinks(site))[:max_item]
@@ -91,7 +96,7 @@ def backfill(chat_id):
 
 def loop():
 	loopImp()
-	threading.Timer(60 * 60 * 2, loop).start()
+	threading.Timer(60 * 2, loop).start()
 
 def normalizeConfig(config):
 	accept_config = set(['to_telegraph', 'to_simplify'])
@@ -109,17 +114,16 @@ def handleCommand(update, context):
 	command, text = splitCommand(msg.text)
 	if 'remove' in command:
 		db.sub.remove(msg.chat_id, text)
+		try:
+			scheduled.remove(text)
+		except:
+			...
 	elif 'add' in command:
 		config = text.split()
 		site = config[0]
 		config = normalizeConfig(config[1:])
 		db.sub.add(msg.chat_id, site, config)
-		item_count = backfillSingle(site, msg.chat_id, 1)
-		if not item_count:
-			msg.chat.send_message('It seems I can not get link from this website')		
-			msg.forward(debug_group.id)
-		else:
-			msg.chat.send_message('Above is an example article you will get in the furture. If this does not look right, feel free to report bug on Github.')
+		scheduled.append(site)
 	elif 'backfill' in command:
 		backfill(msg.chat_id)
 	msg.chat.send_message(db.sub.get(msg.chat_id), disable_web_page_preview=True)
