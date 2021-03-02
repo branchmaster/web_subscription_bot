@@ -14,6 +14,7 @@ import album_sender
 import cached_url
 from bs4 import BeautifulSoup
 import time
+import random
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
