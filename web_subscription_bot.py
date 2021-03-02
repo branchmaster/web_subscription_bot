@@ -54,7 +54,7 @@ def sendLink(site, link, fixed_channel = None):
 			if album_result:
 				result = album_sender.send_v2(channel, album_result)
 			else:
-				result = channel.send_message(message)
+				result = [channel.send_message(message)]
 		except Exception as e:
 			debug_group.send_message('send fail: ' + str(channel.id) 
 				+ ' ' + str(e))
