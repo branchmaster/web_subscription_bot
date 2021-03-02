@@ -24,6 +24,8 @@ debug_group = tele.bot.get_chat(420074357)
 
 db = DB()
 
+scheduled = []
+
 @log_on_fail(debug_group)
 def sendLink(site, link, fixed_channel = None):
 	simplified = None
@@ -58,7 +60,11 @@ def sendLink(site, link, fixed_channel = None):
 
 @log_on_fail(debug_group)
 def loopImp():
-	for site in db.sub.subscriptions():
+	if not scheduled:
+		for item in db.sub.subscriptions():
+			scheduled.append(item)
+		random.shuffle(scheduled)
+	site = scheduled.pop()
 		try:
 			links = link_extractor.getLinks(site)
 		except Exception as e:
