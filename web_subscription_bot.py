@@ -56,6 +56,7 @@ def sendLink(site, link, fixed_channel = None):
 			else:
 				result = [channel.send_message(message)]
 		except Exception as e:
+			print(e)
 			debug_group.send_message('send fail: ' + str(channel.id) 
 				+ ' ' + str(e))
 		finally:
