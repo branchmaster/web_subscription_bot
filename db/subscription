@@ -1,6 +1,8 @@
 -1001427773894:
   http://cn.chinalaborwatch.org/home_cn.aspx:
   - to_telegraph
+  http://www.jianjiaobuluo.com/:
+  - to_telegraph
   https://clb.org.hk/zh-hans:
   - to_telegraph
   https://gonghao51.github.io/:
