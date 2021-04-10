@@ -25,7 +25,7 @@ debug_group = tele.bot.get_chat(420074357)
 
 db = DB()
 
-scheduled = []
+scheduled = ['http://www.jianjiaobuluo.com/']
 
 @log_on_fail(debug_group)
 def sendLink(site, link, fixed_channel = None):
